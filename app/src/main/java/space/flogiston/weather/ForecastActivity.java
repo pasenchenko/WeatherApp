@@ -10,8 +10,12 @@ import android.view.WindowManager;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
@@ -25,15 +29,23 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 import space.flogiston.weather.Forecast.Root;
 
-public class ForecastActivity extends AppCompatActivity {
+public class ForecastActivity extends AppCompatActivity implements Observer<List<WeatherEntity>> {
     private WeatherForecast weatherForecast;
     private SharedPreferences sPref;
+    MutableLiveData<List<WeatherEntity>> weatherData;
+
+    @Override
+    public void onChanged(List<WeatherEntity> weatherEntities) {
+        createRecyclerView(weatherEntities);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
-        sPref = getPreferences(MODE_PRIVATE);
+        sPref = getPreferences(MODE_PRIVATE)    ;
         requestWeatherForecast();
+        weatherData = new MutableLiveData<>();
+        weatherData.observe(this, this);
     }
     public void createRecyclerView (List<WeatherEntity> currentWeather) {
         RecyclerView recyclerView = findViewById(R.id.rec_list);
@@ -48,11 +60,18 @@ public class ForecastActivity extends AppCompatActivity {
         if (lastTodayUpdate > 0) {
             long now = (new Date()).getTime();
             if ((now - lastTodayUpdate) / 1000 < 1800) {
-                RoomDatabase db = Room.databaseBuilder(
+                final RoomDatabase db = Room.databaseBuilder(
                         ForecastActivity.this, WeatherDB.class, "weather_forecast")
-                        .allowMainThreadQueries().build();
-                List<WeatherEntity> weatherForecast = ((WeatherDB) db).weatherDao().getWeatherForecast();
-                createRecyclerView(weatherForecast);
+                        .build();
+                Executors.newSingleThreadExecutor().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        List<WeatherEntity> weatherForecast = ((WeatherDB) db).weatherDao().getWeatherForecast();
+                        weatherData.postValue(weatherForecast);
+                    }
+                });
+                // List<WeatherEntity> weatherForecast = ((WeatherDB) db).weatherDao().getWeatherForecast();
+                // createRecyclerView(weatherForecast);
                 return;
             }
         }
@@ -88,7 +107,7 @@ public class ForecastActivity extends AppCompatActivity {
                             ed.putLong("last_update", now);
                             ed.apply();
 
-                            createRecyclerView(weatherList);
+                            weatherData.postValue(weatherList);
                             // temperature.setText("" + response.body());
                         }
                     }

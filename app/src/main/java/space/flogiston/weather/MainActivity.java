@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<WeatherDay> call, Throwable t) {
-                Log.e("Main", "Exception" + t.toString());
+                // Log.e("Main", "Exception" + t.toString());
             }
         });
     }
