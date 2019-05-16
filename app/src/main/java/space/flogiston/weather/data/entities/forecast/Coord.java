@@ -1,4 +1,4 @@
-package space.flogiston.weather;
+package space.flogiston.weather.data.entities.forecast;
 
 public class Coord {
     private double lon;
@@ -18,3 +18,4 @@ public class Coord {
         return this.lat;
     }
 }
+

@@ -1,5 +1,6 @@
 package space.flogiston.weather;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,14 +11,16 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import space.flogiston.weather.Forecast.Root;
+import space.flogiston.weather.data.entities.forecast.WeatherForecast;
 
 
 public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherHolder>{
-    private List<WeatherEntity> data;
+    private List<WeatherForecast> data;
+    private Context context;
 
-    public WeatherAdapter(List<WeatherEntity> currentWeather) {
-        this.data = currentWeather;
+    WeatherAdapter(List<WeatherForecast> weatherForecast, Context context) {
+        this.data = weatherForecast;
+        this.context = context;
         notifyDataSetChanged();
     }
 
@@ -31,7 +34,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherH
         private TextView text2;
         private TextView date;
 
-        public WeatherHolder(View view) {
+        WeatherHolder(View view) {
             super(view);
             image = view.findViewById(R.id.listWeatherImage);
             text1 = view.findViewById(R.id.text1);
@@ -39,11 +42,11 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherH
             date = view.findViewById(R.id.date);
         }
 
-        public void setContent(int weatherId, double weatherTMin, double weatherTMax, String dateStr) {
+        void setContent(int weatherId, double weatherTMin, double weatherTMax, String dateStr) {
             image.setImageResource(MainActivity.getImageByWeatherCode(weatherId));
-            text1.setText("Tmin: " + weatherTMin + " °C");
-            text2.setText("Tmax: " + weatherTMax + " °C");
-            date.setText("" + dateStr);
+            text1.setText(context.getApplicationContext().getString(R.string.forecast_tmin, weatherTMin));
+            text2.setText(context.getApplicationContext().getString(R.string.forecast_tmax, weatherTMax));
+            date.setText(dateStr);
         }
     }
 

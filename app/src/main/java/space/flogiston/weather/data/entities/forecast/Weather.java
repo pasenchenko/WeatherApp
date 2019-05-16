@@ -1,4 +1,4 @@
-package space.flogiston.weather;
+package space.flogiston.weather.data.entities.forecast;
 
 public class Weather {
     private int id;
@@ -34,4 +34,3 @@ public class Weather {
         return this.icon;
     }
 }
-

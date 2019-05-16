@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">WeatherApp</string>
+    <string name="api_key">5305c0a44167aba1f5518826de32b713</string>
+    <string name="today_temperature">Temperature: %1$.1f °C</string>
+    <string name="today_wind">Wind: %1$.1f m/s</string>
+    <string name="today_pressure">Pressure: %1$.1f mmHg</string>
+    <string name="today_humidity">Humidity: %1$d %%</string>
+    <string name="forecast_tmin">Tmin: %1$.1f °C</string>
+    <string name="forecast_tmax">Tmax: %1$.1f °C</string>
 </resources>

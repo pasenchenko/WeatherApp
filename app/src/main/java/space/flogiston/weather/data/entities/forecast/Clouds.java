@@ -1,7 +1,6 @@
-package space.flogiston.weather;
+package space.flogiston.weather.data.entities.forecast;
 
-public class Clouds
-{
+public class Clouds {
     private int all;
 
     public void setAll(int all){

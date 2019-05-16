@@ -1,9 +1,7 @@
-package space.flogiston.weather.Forecast;
+package space.flogiston.weather.data.entities.forecast;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
-import org.joda.time.DateTime;
+
 public class WeatherList
 {
     private int dt;

@@ -1,4 +1,4 @@
-package space.flogiston.weather.Forecast;
+package space.flogiston.weather.data.entities.forecast;
 
 public class Sys {
     private String pod;

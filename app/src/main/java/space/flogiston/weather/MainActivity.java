@@ -3,22 +3,17 @@ package space.flogiston.weather;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
-import androidx.room.RoomDatabase;
-import space.flogiston.weather.Forecast.*;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,17 +21,27 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
+import space.flogiston.weather.data.Repository;
+import space.flogiston.weather.data.entities.day.TodayWeather;
+import space.flogiston.weather.data.entities.day.WeatherDay;
 
-public class MainActivity extends AppCompatActivity {
-    public static String API_KEY = "5305c0a44167aba1f5518826de32b713";
+public class MainActivity extends AppCompatActivity implements Observer<TodayWeather> {
+    // public static String API_KEY = "5305c0a44167aba1f5518826de32b713";
     public static SharedPreferences sPref;
-    private static WeatherService weatherService;
     private ImageView weatherImage;
     private TextView weatherCondition;
     private TextView temperature;
     private TextView wind;
     private TextView pressure;
     private TextView humidity;
+    private Repository repository;
+    MutableLiveData<TodayWeather> todayWeatherLiveData;
+
+    @Override
+    public void onChanged(TodayWeather todayWeather) {
+        showTodayWeather(todayWeather);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,9 +54,13 @@ public class MainActivity extends AppCompatActivity {
         temperature = findViewById(R.id.temperature);
         pressure = findViewById(R.id.pressure);
         humidity = findViewById(R.id.humidity);
-        today();
+        repository = new Repository(this);
+        todayWeatherLiveData = repository.getTodayWeather("Odessa,ua", "metric");
+        todayWeatherLiveData.observe(this, this);
+        // today();
+
     }
-    public void today () {
+    /*public void today () {
         long lastTodayUpdate = sPref.getLong("last_today_update", -1);
         if (lastTodayUpdate > 0) {
             long now = (new Date()).getTime();
@@ -99,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                 // Log.e("Main", "Exception" + t.toString());
             }
         });
-    }
+    }*/
     public static int getImageByWeatherCode (int weatherCode) {
         int imageId = R.drawable.placeholder;
         int firstDigit = (weatherCode - weatherCode % 100) / 100;
@@ -114,23 +123,31 @@ public class MainActivity extends AppCompatActivity {
         }
         return imageId;
     }
-    public void showTodayWeather () {
-        weatherImage.setImageResource(getImageByWeatherCode(sPref.getInt("weather_code", 0)));
-        weatherCondition.setText(sPref.getString("weather_condition", ""));
-        temperature.setText("Temperature: " + sPref.getFloat("temperature", 0) + " °C");
-        wind.setText("Wind: " + String.valueOf(sPref.getFloat("wind", 0)) + " m/s");
-        pressure.setText("Pressure: " +
-                String.valueOf(sPref.getFloat("pressure", 0)) + " mmHg");
-        humidity.setText("Humidity: " + String.valueOf(sPref.getFloat("humidity", 0)) + " %");
+    public void showTodayWeather (TodayWeather todayWeather) {
+        if (todayWeather != null) {
+            weatherImage.setImageResource(getImageByWeatherCode(todayWeather.weatherCode));
+            weatherCondition.setText(todayWeather.weatherCondition);
+            temperature.setText(getApplicationContext().getString(R.string.today_temperature,
+                    todayWeather.temperature));
+            wind.setText(getApplicationContext().getString(R.string.today_wind,
+                    todayWeather.wind));
+            pressure.setText(getApplicationContext().getString(R.string.today_pressure,
+                    todayWeather.pressure));
+            humidity.setText(getApplicationContext().getString(R.string.today_humidity,
+                    todayWeather.humidity));
+        }
     }
     public void switchToForecast (View view) {
         Intent intent = new Intent();
         intent.setClass(getApplicationContext(), ForecastActivity.class);
         startActivity(intent);
     }
+
+    /*
     public interface WeatherService {
         @GET("/data/2.5/weather")
         Call<WeatherDay> getWeatherByCityName(@Query("q")String city, @Query("units")String units,
                                               @Query("appid") String appID);
     }
+    */
 }

@@ -1,6 +1,5 @@
-package space.flogiston.weather.Forecast;
+package space.flogiston.weather.data.entities.forecast;
 
-import java.util.ArrayList;
 import java.util.List;
 public class Root {
     private String cod;

@@ -1,4 +1,4 @@
-package space.flogiston.weather;
+package space.flogiston.weather.data.entities.day;
 
 public class Wind
 {

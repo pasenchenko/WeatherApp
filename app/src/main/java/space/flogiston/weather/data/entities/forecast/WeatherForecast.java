@@ -1,10 +1,10 @@
-package space.flogiston.weather;
+package space.flogiston.weather.data.entities.forecast;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "weather_forecast")
-public class WeatherEntity {
+public class WeatherForecast {
     @PrimaryKey
     public Integer key;
 
