@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,7 +28,6 @@ import space.flogiston.weather.data.entities.day.TodayWeather;
 import space.flogiston.weather.data.entities.day.WeatherDay;
 
 public class MainActivity extends AppCompatActivity implements Observer<TodayWeather> {
-    // public static String API_KEY = "5305c0a44167aba1f5518826de32b713";
     public static SharedPreferences sPref;
     private ImageView weatherImage;
     private TextView weatherCondition;
@@ -34,8 +35,7 @@ public class MainActivity extends AppCompatActivity implements Observer<TodayWea
     private TextView wind;
     private TextView pressure;
     private TextView humidity;
-    private Repository repository;
-    MutableLiveData<TodayWeather> todayWeatherLiveData;
+    MutableLiveData<TodayWeather> todayWeatherData;
 
     @Override
     public void onChanged(TodayWeather todayWeather) {
@@ -54,61 +54,12 @@ public class MainActivity extends AppCompatActivity implements Observer<TodayWea
         temperature = findViewById(R.id.temperature);
         pressure = findViewById(R.id.pressure);
         humidity = findViewById(R.id.humidity);
-        repository = new Repository(this);
-        todayWeatherLiveData = repository.getTodayWeather("Odessa,ua", "metric");
-        todayWeatherLiveData.observe(this, this);
-        // today();
 
+        MainViewModel mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        mainViewModel.loadData(this);
+        todayWeatherData = mainViewModel.getTodayWeather();
+        todayWeatherData.observe(this, this);
     }
-    /*public void today () {
-        long lastTodayUpdate = sPref.getLong("last_today_update", -1);
-        if (lastTodayUpdate > 0) {
-            long now = (new Date()).getTime();
-            if ((now - lastTodayUpdate) / 1000 < 1800) {
-
-                showTodayWeather();
-                return;
-            }
-        }
-
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.openweathermap.org")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        weatherService = retrofit.create(WeatherService.class);
-
-        weatherService.getWeatherByCityName("Odessa,ua", "metric", MainActivity.API_KEY).enqueue(new Callback<WeatherDay>() {
-            @Override
-            public void onResponse(Call<WeatherDay> call, Response<WeatherDay> response) {
-                if (response.isSuccessful()) {
-                    WeatherDay weatherDay = response.body();
-                    temperature.setText("abcd");
-                    //Log.e("Main", "Exception abcd");
-                    int weatherCode = weatherDay.getWeather().get(0).getId();
-
-                    long now = (new Date()).getTime();
-                    SharedPreferences.Editor ed = sPref.edit();
-                    ed.putLong("last_today_update", now);
-                    ed.putInt("weather_code", weatherCode);
-                    ed.putString("weather_condition", weatherDay.getWeather().get(0).getMain().toUpperCase());
-                    ed.putFloat("temperature", (float)weatherDay.getMain().getTemp());
-                    ed.putFloat("wind", (float)weatherDay.getWind().getSpeed());
-                    ed.putFloat("pressure", (float)Math.round(weatherDay.getMain().getPressure() * 0.75));
-                    ed.putFloat("humidity", weatherDay.getMain().getHumidity());
-
-                    ed.apply();
-                    showTodayWeather();
-                    return;
-                }
-            }
-
-            @Override
-            public void onFailure(Call<WeatherDay> call, Throwable t) {
-                // Log.e("Main", "Exception" + t.toString());
-            }
-        });
-    }*/
     public static int getImageByWeatherCode (int weatherCode) {
         int imageId = R.drawable.placeholder;
         int firstDigit = (weatherCode - weatherCode % 100) / 100;
@@ -142,12 +93,4 @@ public class MainActivity extends AppCompatActivity implements Observer<TodayWea
         intent.setClass(getApplicationContext(), ForecastActivity.class);
         startActivity(intent);
     }
-
-    /*
-    public interface WeatherService {
-        @GET("/data/2.5/weather")
-        Call<WeatherDay> getWeatherByCityName(@Query("q")String city, @Query("units")String units,
-                                              @Query("appid") String appID);
-    }
-    */
 }
