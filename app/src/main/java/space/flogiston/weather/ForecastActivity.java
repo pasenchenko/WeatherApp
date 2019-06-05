@@ -1,47 +1,52 @@
 package space.flogiston.weather;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import space.flogiston.weather.data.Repository;
 import space.flogiston.weather.data.entities.forecast.WeatherForecast;
 
-public class ForecastActivity extends AppCompatActivity implements Observer<List<WeatherForecast>> {
-    private Repository repository;
-    private MutableLiveData<ArrayList<WeatherForecast>> forecastData;
+public class ForecastActivity extends AppCompatActivity {
+    private int orientation;
+    private ListFragment listFragment;
+    private DetailFragment detailFragment;
+    private FragmentManager fragmentManager;
+    private FragmentTransaction fragmentTransaction;
 
-    @Override
-    public void onChanged(List<WeatherForecast> weatherForecast) {
-        createRecyclerView(weatherForecast);
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
+        super.onCreate(null);
+        setContentView(R.layout.list_detail_activity);
 
-        ForecastViewModel forecastViewModel = ViewModelProviders.of(this).get(ForecastViewModel.class);
-        forecastViewModel.loadData(this);
-        forecastData = forecastViewModel.getWeatherForecast();
-        forecastData.observe(this, this);
+        orientation = getResources().getConfiguration().orientation;
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            listFragment = new ListFragment();
+            fragmentTransaction.add(R.id.layout_list, listFragment);
+        } else {
+            listFragment = new ListFragment();
+            detailFragment = new DetailFragment();
+            fragmentTransaction.add(R.id.layout_list, listFragment);
+            fragmentTransaction.add(R.id.layout_detail, detailFragment);
+        }
+        fragmentTransaction.commit();
+
+        Repository repository = ((WeatherApp)getApplication()).getRepository();
+
+        ForecastViewModel forecastViewModel = ViewModelProviders
+                .of(this, new ModelFactory(repository))
+                .get(ForecastViewModel.class);
     }
-    public void createRecyclerView (List<WeatherForecast> weatherForecast) {
-        if (weatherForecast != null) {
-            RecyclerView recyclerView = findViewById(R.id.rec_list);
-            LinearLayoutManager layoutManager = new LinearLayoutManager(this,
-                    RecyclerView.VERTICAL,
-                    false);
-            recyclerView.setLayoutManager(layoutManager);
-            recyclerView.setAdapter(new WeatherAdapter(weatherForecast, ForecastActivity.this));
+    public void updateDetail (WeatherForecast forecast) {
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            detailFragment.changeData(forecast);
         }
     }
     public void switchToMain (View view) {

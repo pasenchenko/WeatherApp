@@ -9,7 +9,11 @@ public class WeatherForecast {
     public Integer key;
 
     public Integer weatherCode;
+    public String weatherCondition;
     public Double tempMin;
     public Double tempMax;
     public String date;
+    public Double wind;
+    public Double pressure;
+    public Integer humidity;
 }

@@ -24,9 +24,10 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherH
         notifyDataSetChanged();
     }
 
-    /* public void changeData(String[] newData) {
+    void changeData(List<WeatherForecast> newData) {
         this.data = newData;
-    } */
+        notifyDataSetChanged();
+    }
 
     class WeatherHolder extends RecyclerView.ViewHolder {
         private ImageView image;
@@ -59,11 +60,17 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherH
     }
 
     @Override
-    public void onBindViewHolder(@NonNull WeatherHolder weatherHolder, int i) {
+    public void onBindViewHolder(@NonNull WeatherHolder weatherHolder, final int i) {
         int weatherId = data.get(i).weatherCode;
         double weatherTMin = data.get(i).tempMin;
         double weatherTMax = data.get(i).tempMax;
         String date = data.get(i).date;
+        weatherHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((ForecastActivity)context).updateDetail(data.get(i));
+            }
+        });
         weatherHolder.setContent(weatherId, weatherTMin, weatherTMax, date);
     }
 

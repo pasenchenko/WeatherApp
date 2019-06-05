@@ -7,10 +7,10 @@ import androidx.lifecycle.ViewModel;
 import space.flogiston.weather.data.Repository;
 import space.flogiston.weather.data.entities.forecast.WeatherForecast;
 
-class ForecastViewModel extends ViewModel {
+class ListFragmentViewModel extends ViewModel {
     private Repository repository;
     private MutableLiveData<ArrayList<WeatherForecast>> weatherForecast;
-    ForecastViewModel(Repository repository) {
+    ListFragmentViewModel(Repository repository) {
         this.repository = repository;
     }
     void loadData () {
@@ -22,4 +22,3 @@ class ForecastViewModel extends ViewModel {
         return weatherForecast;
     }
 }
-

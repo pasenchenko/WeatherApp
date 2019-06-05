@@ -58,9 +58,13 @@ class RemoteDataSource {
                     WeatherForecast n = new WeatherForecast();
                     WeatherList weatherList = root.getList().get(i);
                     n.weatherCode = weatherList.getWeather().get(0).getId();
+                    n.weatherCondition = weatherList.getWeather().get(0).getMain().toUpperCase();
                     n.tempMin = weatherList.getMain().getTemp_min();
-                    n.tempMax = weatherList.getMain().getTemp_min();
+                    n.tempMax = weatherList.getMain().getTemp_max();
                     n.date = weatherList.getDt_txt();
+                    n.wind = weatherList.getWind().getSpeed();
+                    n.pressure = (double)Math.round(weatherList.getMain().getPressure() * 0.75);
+                    n.humidity = weatherList.getMain().getHumidity();
                     weatherForecast.add(n);
                 }
                 return weatherForecast;

@@ -7,25 +7,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.Date;
-
 import androidx.appcompat.app.AppCompatActivity;
-
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
 import space.flogiston.weather.data.Repository;
 import space.flogiston.weather.data.entities.day.TodayWeather;
-import space.flogiston.weather.data.entities.day.WeatherDay;
 
 public class MainActivity extends AppCompatActivity implements Observer<TodayWeather> {
     public static SharedPreferences sPref;
@@ -55,8 +42,11 @@ public class MainActivity extends AppCompatActivity implements Observer<TodayWea
         pressure = findViewById(R.id.pressure);
         humidity = findViewById(R.id.humidity);
 
-        MainViewModel mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        mainViewModel.loadData(this);
+        Repository repository = ((WeatherApp)getApplication()).getRepository();
+        MainViewModel mainViewModel = ViewModelProviders
+                .of(this, new ModelFactory(repository))
+                .get(MainViewModel.class);
+        mainViewModel.loadData();
         todayWeatherData = mainViewModel.getTodayWeather();
         todayWeatherData.observe(this, this);
     }
