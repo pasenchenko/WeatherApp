@@ -1,16 +1,23 @@
-package space.flogiston.weather;
+package space.flogiston.weather.activities;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.view.View;
+import android.view.MenuItem;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
+
+import space.flogiston.weather.ModelFactory;
+import space.flogiston.weather.R;
+import space.flogiston.weather.WeatherApp;
 import space.flogiston.weather.data.Repository;
 import space.flogiston.weather.data.entities.forecast.WeatherForecast;
+import space.flogiston.weather.fragments.DetailFragment;
+import space.flogiston.weather.fragments.ListFragment;
+import space.flogiston.weather.viewmodels.ForecastViewModel;
 
 public class ForecastActivity extends AppCompatActivity {
     private int orientation;
@@ -24,6 +31,11 @@ public class ForecastActivity extends AppCompatActivity {
         super.onCreate(null);
         setContentView(R.layout.list_detail_activity);
 
+        ActionBar actionBar = getSupportActionBar();
+        try {
+            actionBar.setTitle(getString(R.string.forecast_title));
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        } catch (Exception e) {};
         orientation = getResources().getConfiguration().orientation;
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
@@ -49,9 +61,15 @@ public class ForecastActivity extends AppCompatActivity {
             detailFragment.changeData(forecast);
         }
     }
-    public void switchToMain (View view) {
-        Intent intent = new Intent();
-        intent.setClass(getApplicationContext(), MainActivity.class);
-        startActivity(intent);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

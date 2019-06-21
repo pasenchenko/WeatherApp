@@ -7,5 +7,5 @@
     <string name="today_humidity">Humidity: %1$d %%</string>
     <string name="forecast_tmin">Tmin: %1$.1f °C</string>
     <string name="forecast_tmax">Tmax: %1$.1f °C</string>
-    <string name="today">Today</string>
+    <string name="forecast_title">Forecast</string>
 </resources>

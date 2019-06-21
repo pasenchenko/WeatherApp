@@ -1,4 +1,4 @@
-package space.flogiston.weather;
+package space.flogiston.weather.viewmodels;
 
 import java.util.ArrayList;
 
@@ -7,18 +7,18 @@ import androidx.lifecycle.ViewModel;
 import space.flogiston.weather.data.Repository;
 import space.flogiston.weather.data.entities.forecast.WeatherForecast;
 
-class ListFragmentViewModel extends ViewModel {
+public class ListFragmentViewModel extends ViewModel {
     private Repository repository;
     private MutableLiveData<ArrayList<WeatherForecast>> weatherForecast;
-    ListFragmentViewModel(Repository repository) {
+    public ListFragmentViewModel(Repository repository) {
         this.repository = repository;
     }
-    void loadData () {
+    public void loadData () {
         if (weatherForecast == null) {
             weatherForecast = repository.getWeatherForecast("Odessa,ua", "metric");
         }
     }
-    MutableLiveData<ArrayList<WeatherForecast>> getWeatherForecast () {
+    public MutableLiveData<ArrayList<WeatherForecast>> getWeatherForecast () {
         return weatherForecast;
     }
 }

@@ -1,4 +1,4 @@
-package space.flogiston.weather;
+package space.flogiston.weather.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +11,10 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import space.flogiston.weather.R;
+import space.flogiston.weather.activities.ForecastActivity;
+import space.flogiston.weather.activities.MainActivity;
 import space.flogiston.weather.data.entities.forecast.WeatherForecast;
 
 
@@ -18,13 +22,13 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherH
     private List<WeatherForecast> data;
     private Context context;
 
-    WeatherAdapter(List<WeatherForecast> weatherForecast, Context context) {
+    public WeatherAdapter(List<WeatherForecast> weatherForecast, Context context) {
         this.data = weatherForecast;
         this.context = context;
         notifyDataSetChanged();
     }
 
-    void changeData(List<WeatherForecast> newData) {
+    public void changeData(List<WeatherForecast> newData) {
         this.data = newData;
         notifyDataSetChanged();
     }

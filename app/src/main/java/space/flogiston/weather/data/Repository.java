@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.concurrent.Executors;
 
 import androidx.lifecycle.MutableLiveData;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import space.flogiston.weather.data.entities.day.TodayWeather;
 import space.flogiston.weather.data.entities.forecast.WeatherForecast;
 
@@ -86,5 +88,4 @@ public class Repository {
         });
         return liveData;
     }
-
 }

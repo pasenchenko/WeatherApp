@@ -1,12 +1,13 @@
-package space.flogiston.weather;
+package space.flogiston.weather.viewmodels;
 
 import androidx.lifecycle.ViewModel;
+
 import space.flogiston.weather.data.Repository;
 
-class DetailFragmentViewModel extends ViewModel {
+public class ForecastViewModel extends ViewModel {
     private Repository repository;
-
-    DetailFragmentViewModel(Repository repository) {
+    public ForecastViewModel(Repository repository) {
         this.repository = repository;
     }
 }
+

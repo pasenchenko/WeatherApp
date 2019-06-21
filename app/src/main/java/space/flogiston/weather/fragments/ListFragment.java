@@ -1,4 +1,4 @@
-package space.flogiston.weather;
+package space.flogiston.weather.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +16,12 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import space.flogiston.weather.viewmodels.ListFragmentViewModel;
+import space.flogiston.weather.ModelFactory;
+import space.flogiston.weather.R;
+import space.flogiston.weather.adapters.WeatherAdapter;
+import space.flogiston.weather.WeatherApp;
 import space.flogiston.weather.data.Repository;
 import space.flogiston.weather.data.entities.forecast.WeatherForecast;
 
@@ -32,7 +38,8 @@ public class ListFragment extends Fragment implements Observer<List<WeatherForec
     }
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_fragment, container);
 
         recyclerView = view.findViewById(R.id.rec_list);

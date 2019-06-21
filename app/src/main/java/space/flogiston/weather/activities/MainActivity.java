@@ -1,18 +1,33 @@
-package space.flogiston.weather;
+package space.flogiston.weather.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+import space.flogiston.weather.ModelFactory;
+import space.flogiston.weather.R;
+import space.flogiston.weather.WeatherApp;
 import space.flogiston.weather.data.Repository;
+import space.flogiston.weather.data.SyncWorker;
 import space.flogiston.weather.data.entities.day.TodayWeather;
+import space.flogiston.weather.viewmodels.MainActivityViewModel;
 
 public class MainActivity extends AppCompatActivity implements Observer<TodayWeather> {
     public static SharedPreferences sPref;
@@ -34,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements Observer<TodayWea
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sPref = getPreferences(MODE_PRIVATE);
+        sPref = getSharedPreferences("weather", Context.MODE_PRIVATE);
         wind = findViewById(R.id.wind);
         weatherImage = findViewById(R.id.weatherImage);
         weatherCondition = findViewById(R.id.weatherCondition);
@@ -43,11 +58,20 @@ public class MainActivity extends AppCompatActivity implements Observer<TodayWea
         humidity = findViewById(R.id.humidity);
 
         Repository repository = ((WeatherApp)getApplication()).getRepository();
-        MainViewModel mainViewModel = ViewModelProviders
+        MainActivityViewModel mainActivityViewModel = ViewModelProviders
                 .of(this, new ModelFactory(repository))
-                .get(MainViewModel.class);
-        mainViewModel.loadData();
-        todayWeatherData = mainViewModel.getTodayWeather();
+                .get(MainActivityViewModel.class);
+        /*
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTimeInMillis(sPref.getLong("last_upd_worker", 0));
+
+        DateFormat df = new SimpleDateFormat("dd.MM.yy HH:mm:ss");
+        String dateString = df.format(calendar.getTime());
+        Toast.makeText(this, dateString, Toast.LENGTH_SHORT).show();*/
+
+        mainActivityViewModel.loadData();
+
+        todayWeatherData = mainActivityViewModel.getTodayWeather();
         todayWeatherData.observe(this, this);
     }
     public static int getImageByWeatherCode (int weatherCode) {
@@ -78,6 +102,8 @@ public class MainActivity extends AppCompatActivity implements Observer<TodayWea
                     todayWeather.humidity));
         }
     }
+
+
     public void switchToForecast (View view) {
         Intent intent = new Intent();
         intent.setClass(getApplicationContext(), ForecastActivity.class);

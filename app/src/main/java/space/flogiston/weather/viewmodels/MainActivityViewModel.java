@@ -1,22 +1,22 @@
-package space.flogiston.weather;
+package space.flogiston.weather.viewmodels;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import space.flogiston.weather.data.Repository;
 import space.flogiston.weather.data.entities.day.TodayWeather;
 
-class MainViewModel extends ViewModel {
+public class MainActivityViewModel extends ViewModel {
     private Repository repository;
     private MutableLiveData<TodayWeather> todayWeather;
-    MainViewModel(Repository repository) {
+    public MainActivityViewModel(Repository repository) {
         this.repository = repository;
     }
-    void loadData () {
+    public void loadData () {
         if (todayWeather == null) {
             todayWeather = repository.getTodayWeather("Odessa,ua", "metric");
         }
     }
-    MutableLiveData<TodayWeather> getTodayWeather () {
+    public MutableLiveData<TodayWeather> getTodayWeather () {
         return todayWeather;
     }
 }

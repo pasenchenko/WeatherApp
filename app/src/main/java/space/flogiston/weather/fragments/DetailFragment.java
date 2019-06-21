@@ -1,4 +1,4 @@
-package space.flogiston.weather;
+package space.flogiston.weather.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,6 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import space.flogiston.weather.activities.MainActivity;
+import space.flogiston.weather.R;
 import space.flogiston.weather.data.entities.forecast.WeatherForecast;
 
 public class DetailFragment extends Fragment {
@@ -21,9 +24,9 @@ public class DetailFragment extends Fragment {
     private TextView humidity;
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.detail_fragment, container);
-        // getActivity();
         wind = view.findViewById(R.id.wind);
         weatherImage = view.findViewById(R.id.weatherImage);
         weatherCondition = view.findViewById(R.id.weatherCondition);
